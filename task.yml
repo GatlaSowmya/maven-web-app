@@ -1,7 +1,7 @@
 ---
 - name: First Play - Docker Image Build
   hosts: docker
-  tasks:
+tasks:
     - name: Copy Dockerfile
       copy:
        src: Dockerfile
