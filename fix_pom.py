@@ -1,20 +1,20 @@
-from lxml import etree
+import re
 
-def clean_pom(pom_path):
-    try:
-        tree = etree.parse(pom_path)
+def fix_pom_file(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
 
-        # Ensure that there are no extra newline characters or broken tags
-        for elem in tree.iter():
-            if elem.tail:
-                # Remove extra whitespace characters (newlines and tabs)
-                elem.tail = elem.tail.strip()
+    # Fix common HTML entities like &gt; and replace them
+    content = re.sub(r'&gt;', '>', content)
 
-        # Write the cleaned XML back to the file
-        tree.write(pom_path, pretty_print=True, xml_declaration=True, encoding='UTF-8')
-        print("✅ pom.xml cleaned and formatted successfully")
-    except etree.XMLSyntaxError as e:
-        print(f"❌ Error cleaning pom.xml: {e}")
+    # Ensure all tags are correctly formatted by removing extra newlines within tags
+    content = re.sub(r'>\s+<', '><', content)
 
-# Call the clean_pom function to clean the POM file
-clean_pom('pom.xml')
+    # Write the cleaned content back to the file
+    with open(file_path, 'w') as file:
+        file.write(content)
+
+    print("✅ pom.xml cleaned and fixed")
+
+# Fix the pom.xml
+fix_pom_file('pom.xml')
